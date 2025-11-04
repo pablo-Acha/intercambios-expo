@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { Animated,View, Text, StyleSheet, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useThemeColors } from '../src/hooks/useThemeColors';
@@ -21,7 +21,17 @@ export default function RoutesScreen() {
     latitude: parseFloat(params.destinationLat as string),
     longitude: parseFloat(params.destinationLng as string),
   };
+  const [markerScale] = useState(new Animated.Value(0));
 
+useEffect(() => {
+  if (currentLocation && destination) {
+    Animated.spring(markerScale, {
+      toValue: 1.2,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  }
+}, [currentLocation, destination]);
   useEffect(() => {
     initializeMap();
   }, []);
@@ -82,19 +92,18 @@ export default function RoutesScreen() {
         showsUserLocation={true}
       >
         {currentLocation && (
-          <Marker
-            coordinate={currentLocation}
-            title="Tu ubicación"
-            pinColor="blue"
-          />
-        )}
-        
-        <Marker
-          coordinate={destination}
-          title={params.productTitle as string}
-          description={params.meetingPoint as string}
-          pinColor="red"
-        />
+  <Marker coordinate={currentLocation} title="Tu ubicación" pinColor="blue">
+    <Animated.View style={{ transform: [{ scale: markerScale }] }}>
+      <Ionicons name="location-sharp" size={30} color="blue" />
+    </Animated.View>
+  </Marker>
+)}
+
+<Marker coordinate={destination} title={params.productTitle as string} description={params.meetingPoint as string} pinColor="red">
+  <Animated.View style={{ transform: [{ scale: markerScale }] }}>
+    <Ionicons name="location-sharp" size={30} color="red" />
+  </Animated.View>
+</Marker>
 
         {route && (
           <Polyline

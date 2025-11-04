@@ -1,4 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import{useRef, useMemo, useState, useEffect } from 'react';
+import { Animated, Easing } from "react-native";
+
+
 import {
   Pressable,
   Text,
@@ -55,6 +58,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onDelete,
   onUpdate,
 }) => {
+  const animatedOpacity = useRef(new Animated.Value(0)).current
+  const animatedTranslate = useRef(new Animated.Value(20)).current
   const { colors } = useThemeColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
   const isAvailable = product.condition === 'Disponible';
@@ -182,7 +187,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     };
   }, [product.image]);
 
+  useEffect(() => {
+  const randomDelay = Math.random() * 300; // evita efecto robotico
+
+  Animated.parallel([
+    Animated.timing(animatedOpacity, {
+      toValue: 1,
+      duration: 350,
+      delay: randomDelay,
+      useNativeDriver: true
+    }),
+    Animated.timing(animatedTranslate, {
+      toValue: 0,
+      duration: 350,
+      easing: Easing.out(Easing.cubic),
+      delay: randomDelay,
+      useNativeDriver: true
+    })
+  ]).start()
+}, [])
+
   return (
+    <Animated.View style={{ opacity: animatedOpacity, transform: [{ translateY: animatedTranslate }] }}>
+
     <Pressable
       onPress={onPress}
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
@@ -335,16 +362,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   <Text style={styles.profileButtonText}>Editar</Text>
                 </TouchableOpacity>
                 
-                {product.location && (
-                  <TouchableOpacity 
-                    style={[styles.profileButton, { backgroundColor: '#10b981' }]}
-                    onPress={handleEditLocation}
-                  >
-                    <Ionicons name="map" size={16} color="white" />
-                    <Text style={styles.profileButtonText}>Ubicación</Text>
-                  </TouchableOpacity>
-                )}
-                
                 <TouchableOpacity 
                   style={[styles.profileButton, { backgroundColor: '#ef4444' }]}
                   onPress={onDelete}
@@ -358,6 +375,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </View>
     </Pressable>
+    </Animated.View>
   );
 };
 

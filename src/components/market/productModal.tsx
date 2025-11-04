@@ -1,5 +1,7 @@
-import React, { FC, useMemo, useState, useEffect } from 'react';
+import { useRef, FC, useMemo, useState, useEffect } from 'react';
+
 import {
+  Animated,
   Modal,
   View,
   Text,
@@ -60,6 +62,39 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loadingImage, setLoadingImage] = useState(false);
   const [loadingOwner, setLoadingOwner] = useState(false);
+  const scaleFav = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current; // comienza más pequeña
+  const fadeAnim = useRef(new Animated.Value(0)).current;    // invisible
+  const translateYAnim = useRef(new Animated.Value(-20)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.parallel([
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateYAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      // resetear valores para la próxima apertura
+    scaleAnim.setValue(0.8);
+    fadeAnim.setValue(0);
+    translateYAnim.setValue(-20);
+      
+    }
+  }, [visible]);
+
 
   useEffect(() => {
     if (!product) return;
@@ -94,6 +129,7 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
       mounted = false;
     };
   }, [product?.ownerId, product?.alias]);
+
 
   const extractCandidateFromImages = (imagesField: any): string | null => {
     if (!imagesField) return null;
@@ -241,9 +277,24 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
   };
 
   const handleFavorite = () => {
+    // animación
+    Animated.sequence([
+      Animated.timing(scaleFav, {
+        toValue: 1.8,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleFav, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     setIsFavorite(!isFavorite);
     console.log(isFavorite ? 'Removido de favoritos' : 'Añadido a favoritos');
   };
+
 
   const handleReport = () => {
     Alert.alert('Reportar publicación', '¿Por qué deseas reportar esta publicación?', [
@@ -271,7 +322,7 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
           meetingPoint: product.location.meetingPoint || 'Punto de encuentro'
         }
       });
-      
+
       // Cerrar el modal
       onClose();
     } catch (error) {
@@ -292,7 +343,9 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
             <View style={styles.dragIndicator} />
             <View style={styles.headerActions}>
               <TouchableOpacity onPress={handleFavorite} style={styles.iconButton} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#ef4444' : colors.text} />
+                <Animated.View style={{ transform: [{ scale: scaleFav }] }}>
+                  <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#ef4444' : colors.text} />
+                </Animated.View>
               </TouchableOpacity>
               <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
                 <Ionicons name="close" size={22} color={colors.text} />
@@ -308,7 +361,11 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
                   <ActivityIndicator />
                 </View>
               ) : imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
+                <Animated.Image
+                  source={{ uri: imageUri }}
+                  style={[styles.image, { transform: [{ scale: scaleAnim }] }]}
+                />
+
               ) : (
                 <View style={[styles.image, { backgroundColor: '#f3f4f6' }]} />
               )}
@@ -326,21 +383,21 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
             </View>
 
             <View style={styles.mainInfo}>
-              <Text style={styles.title} numberOfLines={3}>
-                {product.title}
-              </Text>
+              <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: translateYAnim }] }}>
+                <Text style={styles.title} numberOfLines={3}>{product.title}</Text>
 
-              {product.price != null ? (
-                <View style={styles.priceSection}>
-                  <Text style={styles.priceLabel}>Precio</Text>
-                  <Text style={styles.price}>Bs {product.price.toFixed(2)}</Text>
-                </View>
-              ) : (
-                <View style={styles.exchangeSection}>
-                  <Text style={styles.exchangeLabel}>Modalidad</Text>
-                  <Text style={styles.exchangeText}>Solo Intercambio</Text>
-                </View>
-              )}
+                {product.price != null ? (
+                  <View style={styles.priceSection}>
+                    <Text style={styles.priceLabel}>Precio</Text>
+                    <Text style={styles.price}>Bs {product.price.toFixed(2)}</Text>
+                  </View>
+                ) : (
+                  <View style={styles.exchangeSection}>
+                    <Text style={styles.exchangeLabel}>Modalidad</Text>
+                    <Text style={styles.exchangeText}>Solo Intercambio</Text>
+                  </View>
+                )}
+              </Animated.View>
             </View>
 
             <View style={styles.divider} />
@@ -357,8 +414,8 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
 
             <View style={styles.section}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Ionicons name="person-outline" size={20} color={colors.text} />
-                  <Text style={styles.sectionLabel}>Vendedor</Text>
+                <Ionicons name="person-outline" size={20} color={colors.text} />
+                <Text style={styles.sectionLabel}>Vendedor</Text>
               </View>
               <View style={styles.sellerCard}>
                 <View style={styles.sellerInfo}>
@@ -394,8 +451,9 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
               <View style={styles.actionsGrid}>
                 <TouchableOpacity style={styles.actionCard} onPress={handleFavorite}>
                   <View style={styles.actionIcon}>
-                    <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#ef4444' : colors.text} />
-
+                    <Animated.View style={{ transform: [{ scale: scaleFav }] }}>
+                      <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={22} color={isFavorite ? '#ef4444' : colors.text} />
+                    </Animated.View>
                   </View>
                   <Text style={styles.actionText}>{isFavorite ? 'En Favoritos' : 'Agregar a Favoritos'}</Text>
                 </TouchableOpacity>

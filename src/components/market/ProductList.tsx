@@ -20,7 +20,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, onDelete, onUpdate,
   const { selectedCategory, searchQuery } = useMarketStore();
 
   const filteredProducts = useMemo(() => {
-    return (products || []).filter((p: any) => {
+    const filtered = (products || []).filter((p: any) => {
       const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
       const q = (searchQuery || "").trim().toLowerCase();
       const matchesText =
@@ -29,6 +29,17 @@ const ProductList: React.FC<ProductListProps> = ({ products, onDelete, onUpdate,
         (p.description && p.description.toString().toLowerCase().includes(q)) ||
         (p.brand && p.brand.toString().toLowerCase().includes(q));
       return matchesCategory && matchesText;
+    });
+
+    return filtered.sort((a, b) => {
+      const aIsAvailable = a.condition !== "Usado" && a.status !== "No Disponible";
+      const bIsAvailable = b.condition !== "Usado" && b.status !== "No Disponible";
+      
+      if (aIsAvailable === bIsAvailable) return 0;
+      
+      if (aIsAvailable && !bIsAvailable) return -1;
+      
+      return 1;
     });
   }, [products, selectedCategory, searchQuery]);
 

@@ -104,17 +104,6 @@ export default function LoginPage() {
               {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.googleButton, isGoogleLoading && styles.buttonDisabled]} 
-            onPress={handleGoogleLogin}
-            disabled={isGoogleLoading}
-          >
-            {isGoogleLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.googleButtonText}>Iniciar con Google</Text>
-            )}
-          </TouchableOpacity>
 
           <View style={styles.registerContainer}>
           <Text style={styles.registerText}>

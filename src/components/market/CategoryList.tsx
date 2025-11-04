@@ -38,6 +38,7 @@ const CategoryList = () => {
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
+      extraData={selectedCategory}
       renderItem={({ item }) => {
         const isSelected =
           selectedCategory === item.name ||

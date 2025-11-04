@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import { Stack } from "expo-router";
 import {
   Text,
@@ -33,6 +33,23 @@ const MarketScreen: React.FC = () => {
 
   const [scrollY] = useState(() => new Animated.Value(0));
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
+  const [showCategories, setShowCategories] = useState(false);
+  const slideAnim = useRef(new Animated.Value(0)).current; // empieza oculto arriba
+  const toggleCategories = () => {
+    if (showCategories) {
+      setShowCategories(false);
+    } else {
+      setShowCategories(true);
+    }
+  };
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: showCategories ? 80: 0, // altura final
+      duration: 300,
+      useNativeDriver: false, // para height
+    }).start();
+  }, [showCategories]);
 
   const load = async (showLoading = true) => {
     if (showLoading) setLoading(true);
@@ -132,28 +149,65 @@ const MarketScreen: React.FC = () => {
             )}
           </View>
           {searchQuery?.length > 0 && <Text style={styles.searchResultsText}>Buscando: "{searchQuery}"</Text>}
+          <TouchableOpacity onPress={toggleCategories}>
+            <Text style={{ color: colors.primary }}>Filtrar Categorías ↓</Text>
+          </TouchableOpacity>
+
+          {/* Animación de la lista de categorías */}
+          <Animated.View style={{ height: slideAnim, overflow: 'hidden' }}>
+            <View
+              style={{
+                // justifyContent: 'center', // centra verticalmente
+                paddingTop: 10,      // espacio arriba y abajo
+              }}
+            >
+              <CategoryList />
+            </View>
+          </Animated.View>
         </View>
 
+        {/* <AnimatedFlatList
+          data={filteredProducts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <ProductList products={[item]} />}
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[colors.primary || "#10b981"]}
+              tintColor={colors.primary || "#10b981"}
+            />
+          }
+        /> */}
         <AnimatedFlatList
-          data={[{ key: "categories" }, { key: "products" }]}
+          data={[{ key: "products" }]}
           keyExtractor={(item) => String((item as any).key)}
           renderItem={({ item }: { item: any }) => {
-            if (item.key === "categories") {
-              return (
-                <View style={styles.section}>
-                  <View style={styles.sectionHeader}>
-                    <View style={styles.titleContainer}>
-                      <View style={styles.accentLine} />
-                      <Text style={styles.sectionTitle}>Categorías</Text>
-                    </View>
-                    <TouchableOpacity onPress={() => setSelectedCategory(null)} activeOpacity={0.7}>
-                      <Text style={styles.seeAllText}>Ver todas →</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <CategoryList />
-                </View>
-              );
-            }
+            // if (item.key === "categories") {
+            //   return (
+            //     <View style={styles.section}>
+            //       <View style={styles.sectionHeader}>
+            //         <View style={styles.titleContainer}>
+            //           <View style={styles.accentLine} />
+            //           <Text style={styles.sectionTitle}>Categorías</Text>
+            //         </View>
+            //         <TouchableOpacity onPress={() => setSelectedCategory(null)} activeOpacity={0.7}>
+            //           <Text style={styles.seeAllText}>Ver todas →</Text>
+            //         </TouchableOpacity>
+            //       </View>
+            //       <TouchableOpacity onPress={toggleCategories} style={{ marginBottom: 12 }}>
+            //         <Text style={{ color: colors.primary }}>Filtrar Categorías ↓</Text>
+            //       </TouchableOpacity>
+            //       {showCategories && (
+            //         <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
+            //           <CategoryList />
+            //         </Animated.View>
+            //       )}
+            //     </View>
+            //   );
+            // }
 
             return (
               <View style={styles.section}>
@@ -163,6 +217,7 @@ const MarketScreen: React.FC = () => {
                     <Text style={styles.sectionTitle}>Productos Destacados</Text>
                   </View>
                 </View>
+
                 <ProductList products={filteredProducts} />
               </View>
             );
