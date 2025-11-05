@@ -13,7 +13,7 @@ export interface Product {
     latitude: number;
     longitude: number;
     address?: string;
-    meetingPoint?: string; // Punto de encuentro específico
+    meetingPoint?: string; 
   };
   ownerId?: string;
 }

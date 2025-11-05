@@ -22,7 +22,6 @@ export const createProduct = async (payload: any, ownerId: string) => {
     ownerId, 
     status: "pending", 
     createdAt: serverTimestamp(),
-    // Asegurar que location tenga el formato correcto
     location: payload.location ? {
       latitude: Number(payload.location.latitude),
       longitude: Number(payload.location.longitude),
@@ -89,7 +88,7 @@ export const rejectProduct = async (productId: string, adminId: string, reason?:
   const logRef = doc(collection(productRef, "moderationLogs"));
   await setDoc(logRef, { action: "rejected", reason: reason || null, adminId, timestamp: serverTimestamp() });
 };
-// NUEVO: Actualizar status del producto
+
 export const updateProductStatus = async (productId: string, status: 'available' | 'reserved' | 'sold') => {
   const productRef = doc(db, 'products', productId);
   await updateDoc(productRef, { 
@@ -98,13 +97,10 @@ export const updateProductStatus = async (productId: string, status: 'available'
   });
 };
 
-// NUEVO: Obtener información del vendedor desde el producto
 export const getProductSeller = async (productId: string) => {
-  // Esta función necesitaría obtener el ownerId del producto
-  // y luego buscar su perfil en la colección 'users'
-  // Por ahora retornamos un objeto temporal
+
   return {
-    userId: 'seller_user_id', // Reemplazar con lógica real
+    userId: 'seller_user_id', 
     username: 'seller_username',
     email: 'seller@example.com'
   };
@@ -119,7 +115,6 @@ export const getProductById = async (productId: string) => {
       return { 
         id: docSnap.id, 
         ...data,
-        // Asegurar que location tenga el formato correcto
         location: data.location ? {
           latitude: Number(data.location.latitude),
           longitude: Number(data.location.longitude),

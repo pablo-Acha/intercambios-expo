@@ -23,7 +23,7 @@ export default function GeneralMap() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [region, setRegion] = useState({
-    latitude: -17.3895, // Coordenadas por defecto (La Paz)
+    latitude: -17.3895, 
     longitude: -66.1568,
     latitudeDelta: 0.1,
     longitudeDelta: 0.1,
@@ -42,7 +42,6 @@ export default function GeneralMap() {
       
       setProducts(productsWithLocation);
       
-      // Centrar mapa en el primer producto con ubicación
       if (productsWithLocation.length > 0 && productsWithLocation[0].location) {
         setRegion(prev => ({
           ...prev,

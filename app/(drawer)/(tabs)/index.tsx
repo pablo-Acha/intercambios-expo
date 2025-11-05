@@ -35,7 +35,7 @@ const MarketScreen: React.FC = () => {
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
   const [showCategories, setShowCategories] = useState(false);
-  const slideAnim = useRef(new Animated.Value(0)).current; // empieza oculto arriba
+  const slideAnim = useRef(new Animated.Value(0)).current; 
   const toggleCategories = () => {
     if (showCategories) {
       setShowCategories(false);
@@ -45,9 +45,9 @@ const MarketScreen: React.FC = () => {
   };
   useEffect(() => {
     Animated.timing(slideAnim, {
-      toValue: showCategories ? 80: 0, // altura final
+      toValue: showCategories ? 80: 0,
       duration: 300,
-      useNativeDriver: false, // para height
+      useNativeDriver: false,
     }).start();
   }, [showCategories]);
 
@@ -157,8 +157,7 @@ const MarketScreen: React.FC = () => {
           <Animated.View style={{ height: slideAnim, overflow: 'hidden' }}>
             <View
               style={{
-                // justifyContent: 'center', // centra verticalmente
-                paddingTop: 10,      // espacio arriba y abajo
+                paddingTop: 10,      
               }}
             >
               <CategoryList />
@@ -185,29 +184,6 @@ const MarketScreen: React.FC = () => {
           data={[{ key: "products" }]}
           keyExtractor={(item) => String((item as any).key)}
           renderItem={({ item }: { item: any }) => {
-            // if (item.key === "categories") {
-            //   return (
-            //     <View style={styles.section}>
-            //       <View style={styles.sectionHeader}>
-            //         <View style={styles.titleContainer}>
-            //           <View style={styles.accentLine} />
-            //           <Text style={styles.sectionTitle}>Categorías</Text>
-            //         </View>
-            //         <TouchableOpacity onPress={() => setSelectedCategory(null)} activeOpacity={0.7}>
-            //           <Text style={styles.seeAllText}>Ver todas →</Text>
-            //         </TouchableOpacity>
-            //       </View>
-            //       <TouchableOpacity onPress={toggleCategories} style={{ marginBottom: 12 }}>
-            //         <Text style={{ color: colors.primary }}>Filtrar Categorías ↓</Text>
-            //       </TouchableOpacity>
-            //       {showCategories && (
-            //         <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
-            //           <CategoryList />
-            //         </Animated.View>
-            //       )}
-            //     </View>
-            //   );
-            // }
 
             return (
               <View style={styles.section}>

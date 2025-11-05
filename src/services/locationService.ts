@@ -13,7 +13,6 @@ export class LocationService {
     }
   }
 
-  // Obtener ubicación actual del usuario
   static async getCurrentLocation(): Promise<Location.LocationObject | null> {
     try {
       const hasPermission = await this.requestPermissions();
@@ -32,14 +31,13 @@ export class LocationService {
     }
   }
 
-  // Calcular distancia entre dos puntos (Haversine formula)
   static calculateDistance(
     lat1: number,
     lon1: number,
     lat2: number,
     lon2: number
   ): number {
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371; 
     const dLat = this.deg2rad(lat2 - lat1);
     const dLon = this.deg2rad(lon2 - lon1);
     
@@ -49,7 +47,7 @@ export class LocationService {
       Math.sin(dLon/2) * Math.sin(dLon/2);
     
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    const distance = R * c; // Distancia en km
+    const distance = R * c; 
     
     return distance;
   }
@@ -58,14 +56,12 @@ export class LocationService {
     return deg * (Math.PI/180);
   }
 
-  // Abrir en app de mapas nativa
   static async openInMaps(
     destination: { latitude: number; longitude: number },
     destinationName?: string
   ): Promise<void> {
     const { latitude, longitude } = destination;
     
-    // Obtener ubicación actual para origen
     const currentLocation = await this.getCurrentLocation();
     
     let url = '';
@@ -79,7 +75,6 @@ export class LocationService {
         url += `&saddr=${currentLocation.coords.latitude},${currentLocation.coords.longitude}`;
       }
     } else {
-      // Android
       url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
       if (destinationName) {
         url += `&destination_place_id=${encodeURIComponent(destinationName)}`;
@@ -102,7 +97,6 @@ export class LocationService {
     }
   }
 
-  // Obtener dirección desde coordenadas (geocoding)
   static async getAddressFromCoords(
     latitude: number,
     longitude: number

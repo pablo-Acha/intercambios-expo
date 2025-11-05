@@ -12,7 +12,7 @@ type ThemeStore = {
 };
 
 export const useThemeStore = create<ThemeStore>((set) => ({
-  theme: initialTheme, // state -> tabla 
+  theme: initialTheme, 
   toggleTheme: () =>
     set((prev) => ({
       theme: prev.theme === 'dark' ? 'light' : 'dark',

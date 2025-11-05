@@ -34,7 +34,6 @@ export interface Product {
   alias?: string | null;
   status?: 'pending' | 'approved' | 'rejected' | 'sold';
   ownerId?: string | null;
-  // NUEVO: Campos de ubicación
   location?: {
     latitude: number;
     longitude: number;
@@ -118,7 +117,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleEditLocation = () => {
-    // Navegar a pantalla de edición completa
     router.push(`/my-post/edit/${product.id}`);
   };
 
@@ -188,7 +186,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   }, [product.image]);
 
   useEffect(() => {
-  const randomDelay = Math.random() * 300; // evita efecto robotico
+  const randomDelay = Math.random() * 300; 
 
   Animated.parallel([
     Animated.timing(animatedOpacity, {

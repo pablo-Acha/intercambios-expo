@@ -11,9 +11,9 @@ export interface POI {
 }
 
 export interface Route {
-  distance: number; // en metros
-  duration: number; // en segundos
-  polyline: string; // codificado
+  distance: number; 
+  duration: number; 
+  polyline: string; 
   steps: RouteStep[];
 }
 

@@ -38,7 +38,6 @@ useEffect(() => {
 
   const initializeMap = async () => {
     try {
-      // Obtener ubicación actual
       const location = await LocationService.getCurrentLocation();
       if (!location) {
         throw new Error('No se pudo obtener la ubicación actual');
@@ -46,7 +45,6 @@ useEffect(() => {
       
       setCurrentLocation(location.coords);
       
-      // Calcular ruta (usando proveedor simulado por ahora)
       const routeProvider = RouteServiceFactory.createProvider('mapbox');
       const calculatedRoute = await routeProvider.getRoute(
         location.coords,

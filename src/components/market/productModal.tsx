@@ -63,8 +63,8 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
   const [loadingImage, setLoadingImage] = useState(false);
   const [loadingOwner, setLoadingOwner] = useState(false);
   const scaleFav = useRef(new Animated.Value(1)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current; // comienza más pequeña
-  const fadeAnim = useRef(new Animated.Value(0)).current;    // invisible
+  const scaleAnim = useRef(new Animated.Value(0.8)).current; 
+  const fadeAnim = useRef(new Animated.Value(0)).current;    
   const translateYAnim = useRef(new Animated.Value(-20)).current;
 
   useEffect(() => {
@@ -87,7 +87,6 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
         }),
       ]).start();
     } else {
-      // resetear valores para la próxima apertura
     scaleAnim.setValue(0.8);
     fadeAnim.setValue(0);
     translateYAnim.setValue(-20);
@@ -277,7 +276,6 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
   };
 
   const handleFavorite = () => {
-    // animación
     Animated.sequence([
       Animated.timing(scaleFav, {
         toValue: 1.8,
@@ -323,7 +321,6 @@ const ProductModal: FC<ProductModalProps> = ({ visible, product, onClose, TradeN
         }
       });
 
-      // Cerrar el modal
       onClose();
     } catch (error) {
       console.error('Error opening map:', error);

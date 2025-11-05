@@ -21,7 +21,7 @@ export default function MercadoList() {
       Animated.timing(animatedValues[i], {
         toValue: 1,
         duration: 300,
-        delay: i * 100, // variación para que no se vea robótico
+        delay: i * 100, 
         useNativeDriver: true,
       })
     );

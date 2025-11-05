@@ -8,7 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useAuth } from "../context/AuthContext";
-import { Ionicons } from '@expo/vector-icons'; // ← Agregar este import
+import { Ionicons } from '@expo/vector-icons'; 
 
 const DrawerLayout = () => {
   const { colors } = useThemeColors();

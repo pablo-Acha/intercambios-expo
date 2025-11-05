@@ -16,7 +16,7 @@ import { useProfileStore } from "../../src/store/useProfileStore";
 
 interface AuthContextType {
   user: User | null;
-  signUp: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string }>; // ← Agregar username
+  signUp: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string }>;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<{ success: boolean; error?: string }>;
