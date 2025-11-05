@@ -14,8 +14,8 @@ import {
 import { useRouter } from 'expo-router';
 import { useAuth } from "../context/AuthContext";
 export default function LoginPage() {
-  const [username, setUsername] = useState("leo.c.c.zubieta@gmail.com");
-  const [password, setPassword] = useState("m4m4p4p4");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
